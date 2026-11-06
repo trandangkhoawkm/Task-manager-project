@@ -47,7 +47,7 @@ public class Task {
         return title;
     }
 
-    void setTitle(String title) {
+    public void setTitle(String title) {
         this.title = title;
     }
 
@@ -55,7 +55,7 @@ public class Task {
         return description;
     }
 
-    void setDescription(String description) {
+    public void setDescription(String description) {
         this.description = description;
     }
 
@@ -63,7 +63,7 @@ public class Task {
         return priority;
     }
 
-    void setPriority(Priority priority) {
+    public void setPriority(Priority priority) {
         this.priority = priority;
     }
 
@@ -71,7 +71,7 @@ public class Task {
         return status;
     }
 
-    void setStatus(Status status) {
+    public void setStatus(Status status) {
         this.status = status;
     }
 
@@ -79,7 +79,7 @@ public class Task {
         return dueDate;
     }
 
-    void setDueDate(LocalDate dueDate) {
+    public void setDueDate(LocalDate dueDate) {
         this.dueDate = dueDate;
     }
 
@@ -87,7 +87,7 @@ public class Task {
         return project;
     }
 
-    void setProject(Project project) {
+    public void setProject(Project project) {
         this.project = project;
     }
 }
