@@ -1,5 +1,6 @@
 package com.trandangkhoa.task_manager.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 
@@ -22,10 +23,11 @@ public class Task {
     private Priority priority; // only allow to enter strings which are defined in public enum Priority{...}
 
     @Enumerated(EnumType.STRING) // Set the specification of saving Enum into dtb
-    private Status status; // only allow to enter strings which are defined in public enum Status{...}
+    private Status status = Status.TODO; // only allow to enter strings which are defined in public enum Status{...}
 
     private LocalDate dueDate; // Local Date is the type of data the save date/month/year without hour and minute
 
+    @JsonIgnore // the return Json will not include project because project is LAZY so if it converts into Json, it will raise proxy error
     @ManyToOne(fetch = FetchType.LAZY) // Create a relationship 1-to-* between project table and task table
     @JoinColumn(name = "project_id") // Create a foreign key column named project_id in tasks table
     private Project project;
@@ -72,7 +74,7 @@ public class Task {
     }
 
     public void setStatus(Status status) {
-        this.status = status;
+        this.status = Status.TODO;
     }
 
     public LocalDate getDueDate() {

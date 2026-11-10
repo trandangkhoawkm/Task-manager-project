@@ -30,7 +30,7 @@ public class ProjectService {
 
     // find by ID
     public Project findById(Long id) {
-        return repo.findById(id) // this method inherits from interface JpaRepository of Spring Data JPA)
+        return repo.findById(id) // this method inherits from interface JpaRepository of Spring Data JPA
         // this findById() method return Optional<Project>, which handles both case: able to find Project and unable to find Project
                 .orElseThrow(() -> new NotFoundException("Project " + id + " not found"));
                 // if it's unable to find Project, throw an Exception announcing that "Project ... not found"

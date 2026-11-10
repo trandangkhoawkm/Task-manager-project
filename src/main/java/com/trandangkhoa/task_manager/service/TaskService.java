@@ -1,4 +1,4 @@
-package com.trandangkhoa.task_manager.service;
+package com.trandangkhoa.task_manager.service; // declare this class in the service package
 
 import com.trandangkhoa.task_manager.entity.Project;
 import com.trandangkhoa.task_manager.entity.Status;
@@ -11,10 +11,13 @@ import java.util.List;
 
 @Service // mark as a service component
 public class TaskService {
+    // this dependency used to perform operations on Task in dtb (e.g: update task, find task by id, delete task,...)
     private final TaskRepository taskRepo;
+    // this dependency used to call processing function from projectService
     private final ProjectService projectService;
 
     public TaskService(TaskRepository taskRepo, ProjectService projectService) {
+        // Constructor injection
         this.taskRepo = taskRepo;
         this.projectService = projectService;
     }
@@ -37,22 +40,17 @@ public class TaskService {
                 .orElseThrow(() -> new NotFoundException("Task " + id + " not found"));
     }
 
-    @Transactional
     public Task update(Long id, Task changes) {
-        Task existing = findById(id);   // throw NotFoundException (404) if missing
-
-        existing.setTitle(changes.getTitle());
-        existing.setDescription(changes.getDescription());
-        existing.setPriority(changes.getPriority());
-        existing.setStatus(changes.getStatus());
-        existing.setDueDate(changes.getDueDate());
-
-        return taskRepo.save(existing);
+        Task task = findById(id);              // throws 404 if missing
+        task.setTitle(changes.getTitle());
+        task.setDescription(changes.getDescription());
+        task.setPriority(changes.getPriority());
+        task.setStatus(changes.getStatus());
+        task.setDueDate(changes.getDueDate());
+        return taskRepo.save(task);
     }
 
-    @Transactional
     public void delete(Long id) {
-        Task existing = findById(id);   // throw NotFoundException (404) if missing
-        taskRepo.delete(existing);
+        taskRepo.delete(findById(id));
     }
 }
