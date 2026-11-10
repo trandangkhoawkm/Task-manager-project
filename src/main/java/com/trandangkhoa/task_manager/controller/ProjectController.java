@@ -2,6 +2,7 @@ package com.trandangkhoa.task_manager.controller;
 
 import com.trandangkhoa.task_manager.entity.Project;   // đổi theo package thật của bạn
 import com.trandangkhoa.task_manager.service.ProjectService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -17,7 +18,7 @@ public class ProjectController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Project create(@RequestBody Project project) {
+    public Project create(@Valid @RequestBody Project project) {
         return service.create(project);
     }
 
@@ -32,7 +33,7 @@ public class ProjectController {
     }
 
     @PutMapping("/{id}")
-    public Project update(@PathVariable Long id, @RequestBody Project project) {
+    public Project update(@PathVariable Long id, @Valid @RequestBody Project project) {
         return service.update(id, project);
     }
 

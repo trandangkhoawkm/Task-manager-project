@@ -2,6 +2,7 @@ package com.trandangkhoa.task_manager.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 @Entity // mark as the class is a JPA Entity, which represents for a table in dtb
 @Table(name = "projects") // Name the dtb table is projects
@@ -11,6 +12,7 @@ public class Project {
     private Long id;
 
     @NotBlank(message = "Project name cannot be blank") // Not accept null and space only values in name column at Application layer
+    @Size(max = 100)
     @Column(nullable = false) // not allow null values at dtb layer
     private String name;
 

@@ -3,6 +3,7 @@ package com.trandangkhoa.task_manager.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 import java.time.LocalDate;
 
@@ -14,6 +15,7 @@ public class Task {
     private Long id;
 
     @NotBlank(message = "Task title cannot be blank")
+    @Size(max = 200)
     @Column(nullable = false)
     private String title;
 

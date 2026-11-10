@@ -3,6 +3,7 @@ package com.trandangkhoa.task_manager.controller;
 import com.trandangkhoa.task_manager.entity.Status;
 import com.trandangkhoa.task_manager.entity.Task;
 import com.trandangkhoa.task_manager.service.TaskService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,7 +20,7 @@ public class TaskController {
 
     @PostMapping("/projects/{projectId}/tasks")
     @ResponseStatus(HttpStatus.CREATED)
-    public Task create(@PathVariable Long projectId, @RequestBody Task task) {
+    public Task create(@PathVariable Long projectId, @Valid @RequestBody Task task) {
         return service.create(projectId, task);
     }
 
@@ -35,7 +36,7 @@ public class TaskController {
     }
 
     @PutMapping("/tasks/{id}")
-    public Task update(@PathVariable Long id, @RequestBody Task task) {
+    public Task update(@PathVariable Long id, @Valid @RequestBody Task task) {
         return service.update(id, task);
     }
 
