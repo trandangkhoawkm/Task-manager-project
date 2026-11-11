@@ -40,14 +40,17 @@ public class TaskService {
                 .orElseThrow(() -> new NotFoundException("Task " + id + " not found"));
     }
 
+    @Transactional
     public Task update(Long id, Task changes) {
-        Task task = findById(id);              // throws 404 if missing
-        task.setTitle(changes.getTitle());
-        task.setDescription(changes.getDescription());
-        task.setPriority(changes.getPriority());
-        task.setStatus(changes.getStatus());
-        task.setDueDate(changes.getDueDate());
-        return taskRepo.save(task);
+        Task existing = findById(id);
+
+        existing.setTitle(changes.getTitle());
+        existing.setDescription(changes.getDescription());
+        existing.setPriority(changes.getPriority());
+        existing.setStatus(changes.getStatus());
+        existing.setDueDate(changes.getDueDate());
+
+        return taskRepo.save(existing);
     }
 
     public void delete(Long id) {

@@ -76,7 +76,7 @@ public class Task {
     }
 
     public void setStatus(Status status) {
-        this.status = Status.TODO;
+        this.status = status;
     }
 
     public LocalDate getDueDate() {
