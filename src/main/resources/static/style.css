@@ -1,0 +1,47 @@
+body {
+    font-family: system-ui, sans-serif;
+    max-width: 720px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+    color: #222;
+}
+
+section {
+    margin-bottom: 2rem;
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+li {
+    padding: 0.6rem 0.8rem;
+    margin-bottom: 0.4rem;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+}
+
+#project-list li {
+    cursor: pointer;
+}
+
+#project-list li:hover {
+    background: #eef4ff;
+    border-color: #7aa7ff;
+}
+
+input {
+    padding: 0.5rem;
+    margin-right: 0.4rem;
+}
+
+button {
+    padding: 0.5rem 0.9rem;
+    cursor: pointer;
+}
+
+/* màu theo status: khớp với li.className = task.status */
+#task-list li.TODO  { border-left: 6px solid #999; }
+#task-list li.DOING { border-left: 6px solid #f0a500; background: #fff8e6; }
+#task-list li.DONE  { border-left: 6px solid #2e9e4f; background: #eaf7ee; text-decoration: line-through; color: #666; }
