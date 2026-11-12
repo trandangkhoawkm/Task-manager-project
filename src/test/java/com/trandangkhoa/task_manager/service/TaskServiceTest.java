@@ -51,31 +51,25 @@ class TaskServiceTest {
 
     @Test
     void findByProject_withoutStatus_usesUnfilteredQuery() {
-        // Arrange
         Task t = new Task();
         when(taskRepo.findByProjectId(1L)).thenReturn(List.of(t));
 
-        // Act
         List<Task> result = service.findByProject(1L, null);
 
-        // Assert
         assertEquals(1, result.size());
         assertSame(t, result.get(0));
-        verify(projectService).findById(1L);          // project existence is checked
+        verify(projectService).findById(1L);
         verify(taskRepo).findByProjectId(1L);
         verify(taskRepo, never()).findByProjectIdAndStatus(any(), any());
     }
 
     @Test
     void findByProject_withStatus_usesFilteredQuery() {
-        // Arrange
         Task t = new Task();
         when(taskRepo.findByProjectIdAndStatus(1L, Status.TODO)).thenReturn(List.of(t));
 
-        // Act
         List<Task> result = service.findByProject(1L, Status.TODO);
 
-        // Assert
         assertEquals(1, result.size());
         assertSame(t, result.get(0));
         verify(projectService).findById(1L);
@@ -85,7 +79,6 @@ class TaskServiceTest {
 
     @Test
     void update_changesFields() {
-        // Arrange
         Project p = new Project();
         Task existing = new Task();
         existing.setTitle("Old title");
@@ -104,16 +97,45 @@ class TaskServiceTest {
         when(taskRepo.findById(1L)).thenReturn(Optional.of(existing));
         when(taskRepo.save(existing)).thenReturn(existing);
 
-        // Act
         Task result = service.update(1L, changes);
 
-        // Assert
         assertEquals("New title", result.getTitle());
         assertEquals("New description", result.getDescription());
         assertEquals(Priority.HIGH, result.getPriority());
         assertEquals(Status.DOING, result.getStatus());
         assertEquals(LocalDate.of(2026, 11, 20), result.getDueDate());
-        assertSame(p, result.getProject());            // project must not change
+        assertSame(p, result.getProject());
         verify(taskRepo).save(existing);
+    }
+
+    @Test
+    void advanceStatus_movesToNextStatus() {
+        Task existing = new Task();
+        existing.setStatus(Status.TODO);
+        when(taskRepo.findById(1L)).thenReturn(Optional.of(existing));
+        when(taskRepo.save(existing)).thenReturn(existing);
+
+        Task result = service.advanceStatus(1L);
+
+        assertEquals(Status.DOING, result.getStatus());
+        verify(taskRepo).save(existing);
+    }
+
+    @Test
+    void advanceStatus_wrapsAroundFromDoneToTodo() {
+        Task existing = new Task();
+        existing.setStatus(Status.DONE);
+        when(taskRepo.findById(1L)).thenReturn(Optional.of(existing));
+        when(taskRepo.save(existing)).thenReturn(existing);
+
+        assertEquals(Status.TODO, service.advanceStatus(1L).getStatus());
+    }
+
+    @Test
+    void advanceStatus_throwsNotFound_whenMissing() {
+        when(taskRepo.findById(99L)).thenReturn(Optional.empty());
+
+        assertThrows(NotFoundException.class, () -> service.advanceStatus(99L));
+        verify(taskRepo, never()).save(any());
     }
 }

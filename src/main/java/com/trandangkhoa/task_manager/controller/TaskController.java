@@ -45,4 +45,9 @@ public class TaskController {
     public void delete(@PathVariable Long id) {
         service.delete(id);
     }
+
+    @PostMapping("/tasks/{id}/advance")
+    public Task advance(@PathVariable Long id) {
+        return service.advanceStatus(id);
+    }
 }

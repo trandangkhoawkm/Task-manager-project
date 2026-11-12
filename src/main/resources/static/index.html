@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Task Manager</title>
     <link rel="stylesheet" href="style.css">
 </head>
@@ -18,6 +19,30 @@
 <section>
     <h2 id="tasks-title">Tasks</h2>
     <ul id="task-list"></ul>
+
+    <div id="task-form" hidden>
+        <label class="field grow">
+            <span>Task title</span>
+            <input id="task-title" placeholder="e.g. Write report">
+        </label>
+
+        <label class="field">
+            <span>Priority</span>
+            <select id="task-priority">
+                <option>LOW</option>
+                <option selected>MEDIUM</option>
+                <option>HIGH</option>
+            </select>
+        </label>
+
+        <label class="field">
+            <span>Deadline</span>
+            <input id="task-due" type="date">
+        </label>
+
+        <button id="add-task">Add task</button>
+    </div>
+    <p id="error" class="error"></p>
 </section>
 
 <script src="app.js"></script>

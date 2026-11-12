@@ -1,3 +1,6 @@
+let currentProjectId = null;
+let currentProjectName = "";
+
 async function loadProjects() {
     const res = await fetch("/api/projects");
     if (!res.ok) {
@@ -16,9 +19,13 @@ async function loadProjects() {
 }
 
 async function loadTasks(projectId, name) {
-    document.getElementById("tasks-title").textContent = "Tasks: " + name;
+    currentProjectId = projectId;
+    currentProjectName = name;
 
-    const res = await fetch("/api/projects/" + projectId + "/tasks");
+    document.getElementById("tasks-title").textContent = "Tasks: " + name;
+    document.getElementById("task-form").hidden = false;
+
+    const res = await fetch(`/api/projects/${projectId}/tasks`);
     if (!res.ok) {
         alert("Could not load tasks");
         return;
@@ -37,10 +44,58 @@ async function loadTasks(projectId, name) {
 
     tasks.forEach(task => {
         const li = document.createElement("li");
-        li.textContent = task.title + " [" + task.priority + "] - " + task.status;
-        li.className = task.status;   // TODO / DOING / DONE, khớp với style.css
+        li.className = task.status; // TODO / DOING / DONE
+
+        const text = document.createElement("span");
+        text.textContent = task.title + " [" + task.priority + "] - " + task.status;
+
+        const actions = document.createElement("span");
+        actions.className = "actions";
+
+        const nextBtn = document.createElement("button");
+        nextBtn.textContent = "Next status";
+        nextBtn.style.marginRight = "10px";
+
+        nextBtn.onclick = () => nextStatus(task);
+
+        const delBtn = document.createElement("button");
+        delBtn.textContent = "Delete task";
+        delBtn.title = "Delete task";
+        delBtn.className = "delete";
+        delBtn.onclick = () => {
+            if (confirm(`Delete "${task.title}"?`)) deleteTask(task);
+        };
+
+        actions.appendChild(nextBtn);
+        actions.appendChild(delBtn);
+        li.appendChild(text);
+        li.appendChild(actions);
         list.appendChild(li);
     });
+}
+
+async function nextStatus(task) {
+    const res = await fetch(`/api/tasks/${task.id}/advance`, { method: "POST" });
+
+    if (!res.ok) {
+        const err = await res.json();
+        document.getElementById("error").textContent = Object.values(err).join(", ");
+        return;
+    }
+    document.getElementById("error").textContent = "";
+    loadTasks(currentProjectId, currentProjectName);
+}
+
+async function deleteTask(task) {
+    const res = await fetch(`/api/tasks/${task.id}`, { method: "DELETE" });
+
+    if (!res.ok) {
+        const err = await res.json();
+        document.getElementById("error").textContent = Object.values(err).join(", ");
+        return;
+    }
+    document.getElementById("error").textContent = "";
+    loadTasks(currentProjectId, currentProjectName);
 }
 
 document.getElementById("add-project").onclick = async () => {
@@ -55,13 +110,36 @@ document.getElementById("add-project").onclick = async () => {
 
     if (!res.ok) {
         const data = await res.json();
-        // {"name": "..."} (validation) hoặc {"error": "..."} (lỗi khác)
         alert(Object.values(data).join(", "));
         return;
     }
 
     input.value = "";
     loadProjects();
+};
+
+document.getElementById("add-task").onclick = async () => {
+    if (currentProjectId === null) return;
+
+    const body = {
+        title: document.getElementById("task-title").value,
+        priority: document.getElementById("task-priority").value,
+        dueDate: document.getElementById("task-due").value || null
+    };
+    const res = await fetch(`/api/projects/${currentProjectId}/tasks`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body)
+    });
+    if (!res.ok) {
+        const err = await res.json();
+        document.getElementById("error").textContent = Object.values(err).join(", ");
+        return;
+    }
+    document.getElementById("error").textContent = "";
+    document.getElementById("task-title").value = "";
+    document.getElementById("task-due").value = "";
+    loadTasks(currentProjectId, currentProjectName);
 };
 
 loadProjects();
